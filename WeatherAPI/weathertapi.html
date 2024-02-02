@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+</head>
+
+<body>
+<h1>Weather App</h1>
+<form id="weather-form">
+  <label for="city-input">Enter City Name:</label>
+  <input type="text" id="city-input" name="city" required>
+  <button type="submit">Get Weather</button>
+</form>
+<div id="weather-result"></div>
+
+<script>
+  document.getElementById('weather-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const city = document.getElementById('city-input').value;
+    getWeather(city);
+  });
+
+  function getWeather(city) {
+    // Replace 'YOUR_OPENWEATHERMAP_API_KEY' with your actual API key
+    const apiKey = 'f069a7555f342d321279566547a64c84';
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const weatherResult = document.getElementById('weather-result');
+        if (data.cod === 200) {
+          const temperature = data.main.temp;
+          const description = data.weather[0].description;
+          const weatherHtml = `<p>Weather in ${city}:</p>
+                                             <p>Temperature: ${temperature}°C</p>
+                                             <p>Description: ${description}</p>`;
+          weatherResult.innerHTML = weatherHtml;
+        } else {
+          weatherResult.innerHTML = 'City not found or API request failed.';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        weatherResult.innerHTML = 'An error occurred while fetching weather data.';
+      });
+  }
+</script>
+</body>
+
+</html>
